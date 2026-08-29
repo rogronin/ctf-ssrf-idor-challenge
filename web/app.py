@@ -21,8 +21,6 @@ def has_valid_scheme(url: str) -> bool:
     return parsed.scheme in ALLOWED_SCHEMES
 
 def error_response(message, status):
-    # Simulates a debug/tracing header an engineer left in for diagnosing
-    # conversion failures - leaks the internal service route on errors only.
     resp = make_response(message, status)
     resp.headers["X-Debug-Route"] = f"web -> {INTERNAL_ROUTE_HINT}"
     return resp
@@ -51,7 +49,8 @@ def convert():
             page.goto(target_url, timeout=15000)
             pdf_bytes = page.pdf(format="A4")
             browser.close()
-    except Exception:
+    except Exception as e:
+        print(f"CONVERSION ERROR: {e}")
         return error_response("Unable to convert this URL. Please check it and try again.", 500)
 
     return send_file(
