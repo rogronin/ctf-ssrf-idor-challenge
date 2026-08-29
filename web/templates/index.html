@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+```
+<title>Quick PDF</title>
+
+<!-- Retro Monospace Font -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        min-height: 100vh;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background:
+            linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px),
+            #0b0b0b;
+
+        background-size: 25px 25px;
+
+        color: #d4d4d4;
+
+        font-family: "IBM Plex Mono", monospace;
+
+        overflow: hidden;
+    }
+
+    /* CRT Scanlines */
+    body::before {
+        content: "";
+
+        position: fixed;
+        inset: 0;
+
+        pointer-events: none;
+
+        background: repeating-linear-gradient(
+            to bottom,
+            rgba(255,255,255,0.025),
+            rgba(255,255,255,0.025) 1px,
+            transparent 1px,
+            transparent 4px
+        );
+
+        opacity: 0.35;
+
+        z-index: 10;
+    }
+
+    .terminal {
+        width: min(680px, 90%);
+
+        background: #111111;
+
+        border: 1px solid #3a3a3a;
+
+        box-shadow:
+            0 0 0 1px #080808,
+            0 20px 60px rgba(0,0,0,0.7);
+
+        animation: boot 0.7s ease-out;
+    }
+
+    @keyframes boot {
+        from {
+            opacity: 0;
+            transform: scale(0.97);
+            filter: brightness(0.4);
+        }
+
+        to {
+            opacity: 1;
+            transform: scale(1);
+            filter: brightness(1);
+        }
+    }
+
+    /* Terminal Header */
+
+    .terminal-header {
+        height: 42px;
+
+        display: flex;
+        align-items: center;
+
+        padding: 0 15px;
+
+        background: #1b1b1b;
+
+        border-bottom: 1px solid #353535;
+
+        font-size: 13px;
+
+        color: #888;
+    }
+
+    .terminal-buttons {
+        display: flex;
+        gap: 7px;
+
+        margin-right: 15px;
+    }
+
+    .terminal-buttons span {
+        width: 9px;
+        height: 9px;
+
+        border-radius: 50%;
+
+        background: #555;
+    }
+
+    .terminal-title {
+        flex: 1;
+        text-align: center;
+
+        letter-spacing: 1px;
+    }
+
+    /* Main Content */
+
+    .content {
+        padding: 55px 50px 45px;
+    }
+
+    .ascii-logo {
+        color: #bdbdbd;
+
+        font-size: 14px;
+
+        line-height: 1.2;
+
+        margin-bottom: 28px;
+
+        text-align: center;
+
+        text-shadow: 0 0 8px rgba(255,255,255,0.15);
+
+        user-select: none;
+    }
+
+    h1 {
+        text-align: center;
+
+        font-size: 34px;
+
+        font-weight: 600;
+
+        letter-spacing: 4px;
+
+        color: #eeeeee;
+
+        margin-bottom: 12px;
+
+        text-transform: uppercase;
+    }
+
+    .subtitle {
+        text-align: center;
+
+        color: #777;
+
+        font-size: 13px;
+
+        margin-bottom: 42px;
+    }
+
+    .subtitle::before {
+        content: "// ";
+
+        color: #555;
+    }
+
+    /* Form */
+
+    .form-label {
+        display: block;
+
+        margin-bottom: 10px;
+
+        color: #888;
+
+        font-size: 12px;
+
+        text-transform: uppercase;
+
+        letter-spacing: 1px;
+    }
+
+    .input-container {
+        display: flex;
+
+        border: 1px solid #3c3c3c;
+
+        background: #090909;
+
+        transition:
+            border-color 0.25s ease,
+            box-shadow 0.25s ease;
+    }
+
+    .input-container:focus-within {
+        border-color: #888;
+
+        box-shadow:
+            0 0 0 1px #555,
+            0 0 20px rgba(255,255,255,0.04);
+    }
+
+    .prompt {
+        display: flex;
+        align-items: center;
+
+        padding-left: 15px;
+
+        color: #666;
+
+        font-size: 14px;
+    }
+
+    input {
+        width: 100%;
+
+        height: 52px;
+
+        padding: 0 15px;
+
+        background: transparent;
+
+        border: none;
+
+        outline: none;
+
+        color: #dcdcdc;
+
+        font-family: "IBM Plex Mono", monospace;
+
+        font-size: 13px;
+    }
+
+    input::placeholder {
+        color: #444;
+    }
+
+    /* Button */
+
+    button {
+        width: 100%;
+
+        height: 52px;
+
+        margin-top: 14px;
+
+        border: 1px solid #555;
+
+        background: #242424;
+
+        color: #d8d8d8;
+
+        font-family: "IBM Plex Mono", monospace;
+
+        font-size: 13px;
+
+        letter-spacing: 1px;
+
+        cursor: pointer;
+
+        transition:
+            background 0.2s ease,
+            color 0.2s ease,
+            border-color 0.2s ease,
+            transform 0.2s ease;
+    }
+
+    button::before {
+        content: "[ ";
+        color: #666;
+    }
+
+    button::after {
+        content: " ]";
+        color: #666;
+    }
+
+    button:hover {
+        background: #333;
+
+        border-color: #888;
+
+        color: #fff;
+
+        transform: translateY(-2px);
+    }
+
+    button:active {
+        transform: translateY(0);
+
+        background: #1a1a1a;
+    }
+
+    /* Status */
+
+    .status {
+        margin-top: 30px;
+
+        padding-top: 20px;
+
+        border-top: 1px dashed #333;
+
+        display: flex;
+
+        justify-content: space-between;
+
+        font-size: 11px;
+
+        color: #555;
+    }
+
+    .status-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .status-dot {
+        width: 6px;
+        height: 6px;
+
+        border-radius: 50%;
+
+        background: #777;
+
+        box-shadow: 0 0 6px rgba(255,255,255,0.25);
+
+        animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+        0%, 45% {
+            opacity: 1;
+        }
+
+        50%, 100% {
+            opacity: 0.25;
+        }
+    }
+
+    .version {
+        color: #444;
+    }
+
+    /* Mobile */
+
+    @media (max-width: 600px) {
+
+        .content {
+            padding: 40px 25px 30px;
+        }
+
+        h1 {
+            font-size: 27px;
+
+            letter-spacing: 2px;
+        }
+
+        .ascii-logo {
+            font-size: 10px;
+        }
+
+        .status {
+            flex-direction: column;
+
+            gap: 10px;
+        }
+    }
+</style>
+```
+
+</head>
+
+<body>
+
+```
+<div class="terminal">
+
+    <div class="terminal-header">
+
+        <div class="terminal-buttons">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+        <div class="terminal-title">
+            quickpdf://converter
+        </div>
+
+    </div>
+
+    <div class="content">
+
+        <div class="ascii-logo">
+            ╔══════════════════════════════════╗<br>
+            ║          Q U I C K  P D F         ║<br>
+            ╚══════════════════════════════════╝
+        </div>
+
+        <h1>Quick PDF</h1>
+
+        <p class="subtitle">
+            webpage to pdf conversion utility
+        </p>
+
+        <form action="/convert" method="POST">
+
+            <label class="form-label">
+                target_url
+            </label>
+
+            <div class="input-container">
+
+                <span class="prompt">&gt;</span>
+
+                <input
+                    type="text"
+                    name="url"
+                    placeholder="https://example.com"
+                    autocomplete="url"
+                    required
+                >
+
+            </div>
+
+            <button type="submit">
+                CONVERT TO PDF
+            </button>
+
+        </form>
+
+        <div class="status">
+
+            <div class="status-left">
+                <span class="status-dot"></span>
+                SYSTEM READY
+            </div>
+
+            <div class="version">
+                QUICKPDF 
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+```
+```
+```
+</body>
+</html>
