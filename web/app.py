@@ -50,7 +50,7 @@ def convert():
             pdf_bytes = page.pdf(format="A4")
             browser.close()
     except Exception as e:
-        print(f"CONVERSION ERROR: {e}")
+        print(f"CONVERSION ERROR: {e}", flush=True)
         return error_response("Unable to convert this URL. Please check it and try again.", 500)
 
     return send_file(
