@@ -13,7 +13,7 @@ services:
     networks:
       - ctf-net
     environment:
-      - CTF_FLAG=LUN4R{SSRF_le4ds_t0_id0r_1nternal_p1v0t}
+      - "CTF_FLAG=LUN4R{SSRF_le4ds_t0_id0r_1nternal_p1v0t}"
 
 networks:
   ctf-net:

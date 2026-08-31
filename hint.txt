@@ -1,0 +1,3 @@
+Some URLs get rejected outright — but rejection responses can carry more information than just an error message. Take a closer look at what comes back, not just the text on the page.
+
+Compare what you're told exists against what you can actually see. If there's a gap, the missing piece probably isn't far from the ones you can already find.

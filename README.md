@@ -22,7 +22,7 @@ docker compose down -v
 
 ## Configuring the Flag
 
-**Before deploying for a real event**, change the default flag in `docker-compose.yml`:
+**If you want to change the default flag in `docker-compose.yml`:
 
 ```yaml
   internal-api:
