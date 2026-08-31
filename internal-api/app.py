@@ -15,14 +15,14 @@ def root():
         "message": "See /internal/health for status.",
         "endpoints": ["/internal/health"]
     })
-@app.route("/internal/health")
+@app.route("/internal/health", strict_slashes=False)
 def health():
     return jsonify({
         "status": "ok",
         "service": "document-api",
         "see_also": "/internal/profile"
     })
-@app.route("/internal/profile")
+@app.route("/internal/profile", strict_slashes=False)
 def profile():
     conn = get_db()
     total = conn.execute("SELECT COUNT(*) AS c FROM documents").fetchone()["c"]
@@ -35,7 +35,7 @@ def profile():
         "see_also": "L2ludGVybmFsL2RvY3VtZW50cw=="
     })
 
-@app.route("/internal/documents")
+@app.route("/internal/documents", strict_slashes=False)
 def list_documents():
     # NOTE: this filter is meant to hide admin-owned documents from casual
     # browsing. It does NOT protect the detail endpoint below - that's the bug.
