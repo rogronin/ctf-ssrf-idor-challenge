@@ -5,9 +5,9 @@ import io
 
 app = Flask(__name__)
 
-BLOCKED_SUBSTRINGS = ["localhost", "127.0.0.1"]
+BLOCKED_SUBSTRINGS = ["localhost", "127.0.0.1", "::1", "0.0.0.0"]
 ALLOWED_SCHEMES = {"http", "https"}
-INTERNAL_ROUTE_HINT = "internal-api:8000"  # leaked via debug header on failures
+INTERNAL_ROUTE_HINT = "internal-api:8000"
 
 def is_blocked(url: str) -> bool:
     lowered = url.lower()
